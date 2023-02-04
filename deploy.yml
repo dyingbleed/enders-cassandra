@@ -1,0 +1,6 @@
+---
+- name: deploy cassandra cluster
+  hosts: cassandra
+  become: True
+  roles:
+    - cassandra

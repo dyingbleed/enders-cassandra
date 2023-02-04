@@ -1,0 +1,7 @@
+---
+cassandra_version: 3.11.14
+cassandra_home: /opt/cassandra
+cassandra_data_directory: /data/cassandra/data
+cassandra_commitlog_directory: /data/cassandra/commitlog
+cassandra_hints_directory: /data/cassandra/hints
+cassandra_saved_caches_directory: /data/cassandra/saved_caches

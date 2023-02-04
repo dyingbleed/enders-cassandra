@@ -1,0 +1,2 @@
+[cassandra]
+cassandra1 ansible_host=127.0.0.1 ansible_port=2205 cassandra_ip_address=192.168.0.8

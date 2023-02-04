@@ -1,0 +1,16 @@
+[Unit]
+Description=Apache Cassandra
+After=network-online.target
+
+[Service]
+Type=forking
+User=cassandra
+Group=cassandra
+Environment=CASSANDRA_LOG_DIR=/var/log/cassandra
+ExecStart={{ cassandra_home }}/bin/cassandra -p /var/run/cassandra/cassandra.pid
+PIDFile=/var/run/cassandra/cassandra.pid
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

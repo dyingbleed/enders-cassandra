@@ -1,0 +1,69 @@
+- name: CASSANDRA - create cassandra group
+  group:
+    name: cassandra
+    system: yes
+    state: present
+- name: CASSANDRA - create cassandra user
+  user:
+    name: cassandra
+    groups: cassandra
+    append: yes
+    system: yes
+    state: present
+- name: CASSANDRA - ensure dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: cassandra
+    group: cassandra
+    mode: '0755'
+  with_items: 
+    - "{{ cassandra_data_directory }}"
+    - "{{ cassandra_commitlog_directory }}"
+    - "{{ cassandra_hints_directory }}"
+    - "{{ cassandra_saved_caches_directory }}"
+    - /var/run/cassandra
+    - /var/log/cassandra
+- name: CASSANDRA - cassandra path stat
+  stat:
+    path: /opt/apache-cassandra-{{ cassandra_version }}
+  register: cassandra_path_stat_result
+- block:
+  - name: CASSANDRA - download cassandra
+    get_url:
+      url: http://archive.apache.org/dist/cassandra/{{ cassandra_version }}/apache-cassandra-{{ cassandra_version }}-bin.tar.gz
+      dest: /tmp
+  - name: CASSANDRA - unarchive cassandra
+    unarchive:
+      src: /tmp/apache-cassandra-{{ cassandra_version }}-bin.tar.gz
+      dest: /opt
+      remote_src: yes
+      owner: cassandra
+      group: cassandra
+  when: not cassandra_path_stat_result.stat.exists
+- name: CASSANDRA - link cassandra home
+  file:
+    src: /opt/apache-cassandra-{{ cassandra_version }}
+    dest: "{{ cassandra_home }}"
+    owner: cassandra
+    group: cassandra
+    state: link
+- name: CASSANDRA - copy config files
+  template:
+    src: "{{ item }}"
+    dest: "{{ cassandra_home }}/conf/{{ item[:-3] }}"
+    owner: cassandra
+    group: cassandra
+    mode: '0644'
+  with_items: 
+    - cassandra.yaml.j2
+    - jvm.options.j2
+  notify: restart cassandra
+- name: CASSANDRA - cassandra service
+  template:
+    src: cassandra.service.j2
+    dest: /etc/systemd/system/cassandra.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart cassandra
