@@ -1,6 +1,8 @@
 ---
-cassandra_version: 3.11.14
+cassandra_version: 4.0.7
 cassandra_home: /opt/cassandra
+
+cassandra_cluster_name: Test Cluster
 cassandra_data_directory: /data/cassandra/data
 cassandra_commitlog_directory: /data/cassandra/commitlog
 cassandra_hints_directory: /data/cassandra/hints

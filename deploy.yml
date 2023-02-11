@@ -3,4 +3,5 @@
   hosts: cassandra
   become: True
   roles:
-    - cassandra
+    - role: cassandra
+      cassandra_cluster_name: Ender's Cassandra Cluster
